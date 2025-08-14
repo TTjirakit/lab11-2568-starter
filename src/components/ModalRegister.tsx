@@ -9,7 +9,7 @@ export default function ModalRegister() {
   // add more state variables:
   const [plan, setPlan] = useState("");
   const [gender, setGender] = useState("");
-  const [lnameError, setlnameError] = useState(false);
+  const [lnameError, setLnameError] = useState(false);
   const [planError, setPlanError] = useState(false);
   const [genderError, setGenderError] = useState(false);
   const [isUserAgreed, setIsUserAgreed] = useState(false);
@@ -20,18 +20,22 @@ export default function ModalRegister() {
   };
 
   const inputLnameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLnameError(false);
     setLname(event.target.value);
   };
 
   const selectPlanOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setPlanError(false);
     setPlan(event.target.value);
   };
 
   const radioGenderMaleOnChange = () => {
+    setGenderError(false);
     setGender("male");
   };
 
   const radioGenderFemaleOnChange = () => {
+    setGenderError(false);
     setGender("female");
   };
 
@@ -82,12 +86,31 @@ export default function ModalRegister() {
 
   const registerBtnOnClick = () => {
     let fnameOk = true;
+    let lnameOK = true;
+    let planOK = true;
+    let genderOK = true;
+
     if (fname === "") {
       fnameOk = false;
       setFnameError(true);
     }
 
-    if (fnameOk) {
+    if (lname === "") {
+      lnameOK = false;
+      setLnameError(true);
+    }
+
+    if (plan === "") {
+      planOK = false;
+      setPlanError(true);
+    }
+
+    if (gender === "") {
+      genderOK = false;
+      setGenderError(true);
+    }
+
+    if (fnameOk && lnameOK && planOK && genderOK) {
       alert(
         `Registration complete. Please pay money for ${computeTotalPayment().toLocaleString()} THB.`
       );
@@ -125,16 +148,20 @@ export default function ModalRegister() {
                   onChange={inputFnameOnChange}
                   value={fname}
                 />
-                <div className="invalid-feedback">Invalid last name</div>
+                {fnameError && (
+                <div className="invalid-feedback">Invalid first name</div>
+                )}
               </div>
               <div>
                 <label className="form-label">Last name</label>
                 <input
-                  className="form-control"
+                  className={"form-control" + (lnameError ? " is-invalid" : "")}
                   onChange={inputLnameOnChange}
                   value={lname}
                 />
-                <div className="invalid-feedback">Invalid last name</div>
+                {lnameError && (
+                  <div className="invalid-feedback">Invalid last name</div>
+                )}
               </div>
             </div>
 
@@ -142,7 +169,7 @@ export default function ModalRegister() {
             <div className="mt-2">
               <label className="form-label">Plan</label>
               <select
-                className="form-select"
+                className={"form-select" + (planError ? " is-invalid" : "")}
                 onChange={selectPlanOnChange}
                 value={plan}
               >
@@ -154,7 +181,9 @@ export default function ModalRegister() {
                   Full Marathon 42.195 Km (1,500 THB)
                 </option>
               </select>
+              {planError && (
               <div className="invalid-feedback">Please select a Plan</div>
+              )}
             </div>
 
             {/* Gender */}
@@ -177,8 +206,10 @@ export default function ModalRegister() {
                 Female 👩
                 {/* To show error when user did not select gender, */}
                 {/* We just have to render the div below (Not using is-invalid bootstrap class) */}
-                {/* <div className="text-danger">Please select gender</div> */}
-              </div>
+                {genderError && (
+                <div className="text-danger">Please select gender</div>
+              )}  
+            </div>
             </div>
 
             {/* Extra Items */}
@@ -211,7 +242,11 @@ export default function ModalRegister() {
                 />
                 <label className="form-check-label">Cap 🧢 (400 THB)</label>
               </div>
+              {buyBottle && buyShoes && buyCap && (
+              <span className="text-success d-block">(20% Discounted)</span>
+              )}
             </div>
+            
 
             <div className="alert alert-primary mt-3" role="alert">
               Promotion📢 Buy all items to get 20% Discount
@@ -221,7 +256,6 @@ export default function ModalRegister() {
             <div>
               Total Payment : {computeTotalPayment().toLocaleString()} THB
               {/* Render below element conditionally when user get 20% discount */}
-              {/* <span className="text-success d-block">(20% Discounted)</span> */}
             </div>
           </div>
           <div className="modal-footer">
