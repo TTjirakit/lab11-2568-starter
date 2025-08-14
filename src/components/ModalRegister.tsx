@@ -9,6 +9,10 @@ export default function ModalRegister() {
   // add more state variables:
   const [plan, setPlan] = useState("");
   const [gender, setGender] = useState("");
+  const [lnameError, setlnameError] = useState(false);
+  const [planError, setPlanError] = useState(false);
+  const [genderError, setGenderError] = useState(false);
+  const [isUserAgreed, setIsUserAgreed] = useState(false);
   // ----------------------------------------------------------------
   const inputFnameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFnameError(false);
@@ -47,13 +51,29 @@ export default function ModalRegister() {
 
   const computeTotalPayment = () => {
     let total = 0;
+    let count = 0;
+    
     if (plan === "funrun") total += 500;
     if (plan === "mini") total += 800;
     if (plan === "half") total += 1200;
     if (plan === "full") total += 1500;
-    if (buyBottle) total += 200;
-    if (buyShoes) total += 600;
-    if (buyCap) total += 400;
+
+    if (buyBottle) {
+      total += 200;
+      count++;
+    }
+    if (buyShoes) {
+      total += 600;
+      count++;
+    }
+    if (buyCap) {
+      total += 400;
+      count++;
+    }
+
+    if(count === 3){
+      total -= (200 + 600 + 400) * 0.2;
+    }
 
     return total;
   };
@@ -207,7 +227,10 @@ export default function ModalRegister() {
           <div className="modal-footer">
             {/* Terms and conditions */}
             <div>
-              <input className="me-2 form-check-input" type="checkbox" />I agree
+              <input className="me-2 form-check-input" type="checkbox" 
+              checked = {isUserAgreed}
+              onChange = {(event) => setIsUserAgreed(event.target.checked)}
+              />I agree
               to the terms and conditions
             </div>
             {/* Register Button */}
@@ -215,7 +238,7 @@ export default function ModalRegister() {
               className="btn btn-success my-2"
               onClick={registerBtnOnClick}
               //You can embbed a state like below to disabled the button
-              //disabled={isUserAgreed}
+              disabled={!isUserAgreed}
             >
               Register
             </button>
